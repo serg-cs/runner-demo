@@ -34,6 +34,7 @@ const $ = id => document.getElementById(id);
 const ui = {
   score: $('score'), coins: $('coins'), coinPill: $('coin-pill'),
   start: $('start'), over: $('over'), toast: $('toast'), mute: $('mute'),
+  pause: $('pause'), paused: $('paused'), resume: $('resume-btn'),
   final: $('final-score'), finalCoins: $('final-coins'), best: $('best-score'), newBest: $('new-best'),
   play: $('play-btn'), retry: $('retry-btn'),
 };
@@ -567,7 +568,7 @@ function updateMuteIcon() { ui.mute.textContent = audio.on ? '🔊' : '🔇'; }
 updateMuteIcon();
 
 // ---------- Game state ----------
-let state = 'ready'; // ready | playing | dead
+let state = 'ready'; // ready | playing | paused | dead
 let speed = IDLE_SPEED, distance = 0, coins = 0, nextRow = 0, nextMilestone = 1000;
 let deadT = 0, shake = 0, runT = 0, coinSpin = 0;
 let best = Number(store.get('railrush-best', 0)) || 0;
@@ -603,6 +604,18 @@ function start() {
   nextRow = SPAWN_Z - z;
 
   setState('playing');
+}
+
+function setPaused(on) {
+  if (on && state === 'playing') {
+    setState('paused');
+    ui.paused.classList.remove('hidden');
+    if (matchMedia('(hover: hover)').matches) ui.resume.focus({ preventScroll: true });
+  } else if (!on && state === 'paused') {
+    setState('playing');
+    ui.paused.classList.add('hidden');
+    clock.getDelta(); // don't count the paused time as one long frame
+  }
 }
 
 function crash() {
@@ -817,6 +830,11 @@ window.addEventListener('keydown', e => {
   const code = e.code;
   if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space'].includes(code)) e.preventDefault();
   if (code === 'KeyM') return toggleSound();
+  if (code === 'KeyP' || code === 'Escape') return setPaused(state === 'playing');
+  if (state === 'paused') {
+    if ((code === 'Space' || code === 'Enter') && !e.repeat) setPaused(false);
+    return;
+  }
   if (state !== 'playing') {
     if ((code === 'Space' || code === 'Enter') && !e.repeat && (state === 'ready' || deadT > 1)) start();
     return;
@@ -873,6 +891,17 @@ ui.mute.addEventListener('click', e => {
   e.currentTarget.blur();
   toggleSound();
 });
+ui.pause.addEventListener('click', e => {
+  e.currentTarget.blur();
+  setPaused(state === 'playing');
+});
+ui.resume.addEventListener('click', e => {
+  e.currentTarget.blur();
+  setPaused(false);
+});
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) setPaused(true);
+});
 
 window.addEventListener('resize', () => {
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -885,10 +914,12 @@ window.addEventListener('resize', () => {
 const clock = new THREE.Clock();
 renderer.setAnimationLoop(() => {
   const dt = Math.min(clock.getDelta(), 0.05);
-  // Sub-step so fast speeds never tunnel through thin barriers
-  const steps = Math.max(1, Math.ceil((speed * dt) / 0.5));
-  for (let i = 0; i < steps; i++) step(dt / steps);
-  animate(dt);
-  updateHUD();
+  if (state !== 'paused') {
+    // Sub-step so fast speeds never tunnel through thin barriers
+    const steps = Math.max(1, Math.ceil((speed * dt) / 0.5));
+    for (let i = 0; i < steps; i++) step(dt / steps);
+    animate(dt);
+    updateHUD();
+  }
   renderer.render(scene, camera);
 });

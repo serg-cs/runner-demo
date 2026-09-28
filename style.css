@@ -240,3 +240,9 @@ kbd {
   .stat.big b { font-size: 36px; }
   .hints { margin-top: 16px; }
 }
+
+/* ---------- Pause ---------- */
+#pause { display: none; place-items: center; color: #fff; }
+#pause svg { fill: currentColor; filter: drop-shadow(0 2px 0 rgba(0, 0, 0, .35)); }
+body[data-state="playing"] #pause { display: grid; }
+.title-paused { color: #7bdff2; margin-bottom: 34px; text-shadow: 0 7px 0 var(--ink), 0 14px 0 rgba(0, 0, 0, .25); }

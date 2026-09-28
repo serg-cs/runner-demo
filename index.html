@@ -27,6 +27,9 @@
     <div class="hud-right">
       <div class="pill" id="coin-pill"><i class="coin-icon"></i><b id="coins">0</b></div>
       <button id="mute" class="icon-btn" aria-label="Toggle sound">🔊</button>
+      <button id="pause" class="icon-btn" aria-label="Pause">
+        <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><rect x="5" y="4" width="5" height="16" rx="1.5"/><rect x="14" y="4" width="5" height="16" rx="1.5"/></svg>
+      </button>
     </div>
   </div>
 
@@ -46,6 +49,14 @@
         <span>Swipe ⇠ ⇢ to switch lanes</span>
         <span>Swipe ⇡ or tap to jump</span>
       </div>
+    </div>
+  </div>
+
+  <div id="paused" class="overlay hidden">
+    <div class="card">
+      <h2 class="title title-paused">PAUSED</h2>
+      <button id="resume-btn" class="btn">RESUME</button>
+      <p class="hints desk-only"><span>press <kbd>P</kbd> or <kbd>Esc</kbd> to resume</span></p>
     </div>
   </div>
 
