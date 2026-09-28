@@ -1,0 +1,69 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2a8dff">
+  <meta name="description" content="Rail Rush: a tiny arcade endless runner built with Three.js.">
+  <title>Rail Rush</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Lilita+One&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body data-state="ready">
+  <div id="game"></div>
+
+  <div id="hud">
+    <div class="pill"><span>SCORE</span><b id="score">0</b></div>
+    <div class="hud-right">
+      <div class="pill" id="coin-pill"><i class="coin-icon"></i><b id="coins">0</b></div>
+      <button id="mute" class="icon-btn" aria-label="Toggle sound">🔊</button>
+    </div>
+  </div>
+
+  <div id="toast"></div>
+
+  <div id="start" class="overlay">
+    <div class="card">
+      <h1 class="title">RAIL<br>RUSH</h1>
+      <p class="tagline">Dodge trains. Jump barriers. Grab coins!</p>
+      <button id="play-btn" class="btn">PLAY</button>
+      <div class="hints desk-only">
+        <span><kbd>←</kbd><kbd>→</kbd> switch lanes</span>
+        <span><kbd>↑</kbd> jump</span>
+        <span><kbd>↓</kbd> drop</span>
+      </div>
+      <div class="hints touch-only">
+        <span>Swipe ⇠ ⇢ to switch lanes</span>
+        <span>Swipe ⇡ or tap to jump</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="over" class="overlay hidden">
+    <div class="card">
+      <h2 class="title title-over">OUCH!</h2>
+      <div id="new-best" class="badge">NEW BEST!</div>
+      <div class="stats">
+        <div class="stat big"><span>SCORE</span><b id="final-score">0</b></div>
+        <div class="stat"><span>COINS</span><b id="final-coins">0</b></div>
+        <div class="stat"><span>BEST</span><b id="best-score">0</b></div>
+      </div>
+      <button id="retry-btn" class="btn">TRY AGAIN</button>
+      <p class="hints desk-only"><span>or press <kbd>Space</kbd></span></p>
+    </div>
+  </div>
+
+  <noscript><p class="noscript">Rail Rush needs JavaScript to run.</p></noscript>
+  <script type="module" src="game.js"></script>
+</body>
+</html>
